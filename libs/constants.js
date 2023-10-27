@@ -1,7 +1,7 @@
 /** @param {NS} ns */
 
 
-export const allServers = '/utilities/files/allServers.js'
+export const allServers = '/utilities/tempFiles/allServers.js'
 export const initialSpider = '/utilities/spider.js'
 export const hackingTools = {
   ssh:"BruteSSH.exe",
