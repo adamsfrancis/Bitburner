@@ -9,11 +9,18 @@ const fileList = [
     'utilities/hackingTools/weaken.js',
     'utilities/userTriggered/cleanHome.js',
     'utilities/userTriggered/getServerInfo.js',
-    'utilities/getToolsAvailable.js',
-    'utilities/spider.js'
+    'utilities/getToolsAvailable.js'
 ]
 
 export async function main(ns) {
+    const allFiles = ns.ls("home");
+  
+    const jsFiles = allFiles.filter(file => file.endsWith(".js"));
+  
+    for(let file in jsFiles){
+        ns.rm(jsFiles[file]);
+    }
+
     for(let file in fileList){
         await ns.wget(baseURL+fileList[file],fileList[file])
     }
