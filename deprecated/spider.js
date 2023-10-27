@@ -19,5 +19,5 @@ export async function main(ns) {
     }
 
   await discoverServers(startingServer);
-  await ns.write(constants.allServers,JSON.stringify(Array.from(discoveredServers)),"w");
+  // await ns.write(constants.allServers,JSON.stringify(Array.from(discoveredServers)),"w");
 }
