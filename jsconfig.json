@@ -1,0 +1,8 @@
+{
+    "typeAcquisition": {
+      "include": [
+        "/localOnly/index.d.ts"
+      ]
+    }
+}
+  
