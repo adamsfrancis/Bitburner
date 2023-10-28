@@ -1,7 +1,7 @@
 /** @param {NS} ns */
 
 
-class server{
+export class server{
     constructor({backdoorInstalled = false, baseDifficulty = -1,cpuCores,ftpPortOpen,hackDifficulty = 999999,hasAdminRights,hostName,httpPortOpen,isConnectedTo,maxRam,minDifficulty = 999999,moneyAvailable = -1,
                 moneyMax = 0,numOpenPortsRequired,openPortCount,purchasedByPlayer,ramUsed,requiredHackingSkill = 999999,serverGrowth = -1,smtpPortOpen,sqlPortOpen,sshPortOpen},parentServer){
             
@@ -41,7 +41,6 @@ class server{
     }
 }
 
-export default server;
 /** This seems overly complex, saving for possibly implementation at a later date. */
 
 // class serverPurchased extends serverBase{
