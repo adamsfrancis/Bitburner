@@ -1,6 +1,7 @@
 /** @param {NS} ns */
 
-import {server} from '/classes/serverBase.js'
+// import {server} from '/classes/serverBase.js'
+import {addServer} from '/utilities/createServer.js'
 
 const allServers = [];
 
@@ -26,7 +27,7 @@ async function mapServers(ns) {
 
   async function convertToArray(mapOfServers){
     for (const [serverName, parentServerName] of mapOfServers.entries()) {
-      allServers.push(new server(serverName,parentServerName));
+      addServer(serverName,parentServerName,await ns.getServer(serverName));
     }
   }
 
@@ -34,10 +35,10 @@ async function mapServers(ns) {
 
   await discoverServers(startingServer);
   await convertToArray(discoveredServers);
-  ns.tprint(allServers["n00dles"]);
-
 }
 
 export async function main(ns){
-  await mapServers(ns);
+await mapServers(ns);
+
 }
+

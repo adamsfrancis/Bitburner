@@ -15,7 +15,7 @@ export class server{
             /** @param {number} hackDifficulty - (Optional) Server Security Level */
             this.hackDifficulty = hackDifficulty; 
             this.hasAdminRights = hasAdminRights;
-            this.hostName = hostName;
+            this.hostName = hostname;
             this.httpPortOpen = httpPortOpen;
             this.isConnectedTo = isConnectedTo;
             this.ramMax = maxRam;

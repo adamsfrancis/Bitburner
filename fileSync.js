@@ -11,20 +11,27 @@ const fileList = [
     'utilities/hackingTools/weaken.js',
     'utilities/userTriggered/cleanHome.js',
     'utilities/userTriggered/getServerInfo.js',
+    'utilities/createServere.js',
     'utilities/getToolsAvailable.js',
     'utilities/helpers.js'
 ]
 
 export async function main(ns) {
+    await cleanUp(ns);
+    for(let file in fileList){
+        if(await !ns.wget(baseURL+fileList[file],fileList[file])){
+            ns.tprint("Failed to download: " + fileList[file])
+        }
+
+    }
+  }
+
+  async function cleanUp(ns){
     const allFiles = ns.ls("home");
   
     const jsFiles = allFiles.filter(file => file.endsWith(".js"));
   
     for(let file in jsFiles){
         ns.rm(jsFiles[file]);
-    }
-
-    for(let file in fileList){
-        await ns.wget(baseURL+fileList[file],fileList[file])
     }
   }
