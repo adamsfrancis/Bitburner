@@ -5,9 +5,10 @@ import { hackingTools } from "/libs/constants.js";
 
 
 export async function crackServers(ns,serverMap){
-    const needsCracked = serverMap.filter((server) => server.hasAdminRights === false);
+    const needsCracked = serverMap.filter((server) => server.hasAdminRights === "false");
+
     for(let tool in hackingTools){
-        const toCrackList = needsCracked.filter((server) => server.hackingTools[tool].portFlag === false);
+        const toCrackList = needsCracked.filter((server) => server.hackingTools[tool].portFlag === "false");
         if(await ns.fileExists(hackingTools[tool].Program,"home") && toCrackList.length > 0){
             for(let crackableServer in toCrackList){
                 ns[hackingTools[tool].Command](toCrackList[crackableServer.hostName]);

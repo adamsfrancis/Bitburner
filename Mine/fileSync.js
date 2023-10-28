@@ -19,12 +19,14 @@ const fileList = [
 
 export async function main(ns) {
     await cleanUp(ns);
+    ns.tprint("Cleanup complete, moving on to downloads.")
     for(let file in fileList){
         if(await !ns.wget(baseURL+fileList[file],fileList[file])){
             ns.tprint("Failed to download: " + fileList[file])
         }
 
     }
+    ns.tprint("Files downloaded, ready to run.")
   }
 
   async function cleanUp(ns){
