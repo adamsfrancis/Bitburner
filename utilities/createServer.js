@@ -1,12 +1,12 @@
 /** @param {NS} ns */
 
 // Function to add server data to the object
-function addServer(hostName, parentServer, serverData) {
+export async function addServer(hostName, parentServer, serverData) {
   allServers[hostName] = createServerObject(serverData, parentServer);
 }
 
 // Function to initialize a new server data object
-function createServerObject(curServer, parentServer) {
+export async function createServerObject(curServer, parentServer) {
   return {
     hostName: curServer.hostname,
 
