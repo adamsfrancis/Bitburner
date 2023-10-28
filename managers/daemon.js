@@ -2,8 +2,12 @@
 
 // import {server} from '/classes/serverBase.js'
 import {addServer} from '/utilities/createServer.js'
+import { crackServers } from '/managers/crackServers.js';
 
 const allServers = [];
+const configFlags = {
+  allCracked:false
+}
 
 /**
  * Build server map, build map of servers and parents, then store to allServers as full server objects.
@@ -39,6 +43,11 @@ async function mapServers(ns) {
 
 export async function main(ns){
 await mapServers(ns);
+let areTheyCracked =allServers.filter((server) => server.hasAdminRights === false)
+ns.tprint("Are they cracked length: " + areTheyCracked.length);
+if(areTheyCracked.length === 0){configFlags.allCracked = true;}
+if(configFlags.allCracked === true){await crackServers(ns,allServers);}
+
 
 }
 

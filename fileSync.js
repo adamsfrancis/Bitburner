@@ -5,14 +5,15 @@ const baseURL = 'https://raw.githubusercontent.com/adamsfrancis/Bitburner/main/'
 const fileList = [
     'classes/serverBase.js',
     'libs/constants.js',
+    'managers/crackServers.js',
     'managers/daemon.js',
+    'utilities/hackingTools/getToolsAvailable.js',
     'utilities/hackingTools/grow.js',
     'utilities/hackingTools/hack.js',
     'utilities/hackingTools/weaken.js',
     'utilities/userTriggered/cleanHome.js',
     'utilities/userTriggered/getServerInfo.js',
-    'utilities/createServere.js',
-    'utilities/getToolsAvailable.js',
+    'utilities/createServer.js',
     'utilities/helpers.js'
 ]
 
