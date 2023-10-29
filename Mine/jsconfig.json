@@ -1,8 +1,8 @@
-{
-    "typeAcquisition": {
-      "include": [
-        "/localOnly/index.d.ts"
-      ]
-    }
-}
+// {
+//     "typeAcquisition": {
+//       "include": [
+//         "/localOnly/index.d.ts"
+//       ]
+//     }
+// }
   
