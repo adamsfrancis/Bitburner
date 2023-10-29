@@ -1,12 +1,12 @@
 import { NS } from "@ns";
-
 import { globalFiles } from "/lib/constants";
 import { serverObject } from "/classes/classServer";
+import { stringifyAndWrite } from "/lib/helpers";
+
+/** Theoretical RAM Cost: 3.8 GB */
 
 
-
-
-
+/** @remarks RAM: 0.2 GB */
 async function getServerStructure(ns:NS):Promise<Map<string, string | undefined>> {
     /** Initial run variable setup, we want to start from "home", and follow the network from there.
      *  Since home is the base level, it's parent will be null. Saving parents for possible backdoor
@@ -32,6 +32,7 @@ async function getServerStructure(ns:NS):Promise<Map<string, string | undefined>
     return discoveredServers;
 }
 
+/** RAM: 2 GB */
 async function getAllServerInfo(ns: NS, serverMap: Map<string, string | undefined>):Promise<Array<serverObject>> {
     const allServers: Array<serverObject> = [];
   
@@ -44,9 +45,9 @@ async function getAllServerInfo(ns: NS, serverMap: Map<string, string | undefine
     return allServers;
   }
   
-  async function stringifyServerMap(ns:NS,serverMap:serverObject[]) {
-    const stringifiedMap:string = JSON.stringify(serverMap);
-    await ns.write(globalFiles.serverMap,stringifiedMap,"w");
+  /** RAM: 0 GB */
+  async function storeServerData(ns:NS,serverData:object,filePath:string):Promise<void> {
+    await stringifyAndWrite(ns,serverData,filePath);
   }
   
 
@@ -55,12 +56,12 @@ async function getAllServerInfo(ns: NS, serverMap: Map<string, string | undefine
 
 export async function main(ns:NS): Promise<void> {
     /** Get the server structure */
-    // eslint-disable-next-line no-constant-condition
-    
     const serverStructure:Map<string,string | undefined> = await getServerStructure(ns);
     const serverMap = await getAllServerInfo(ns,serverStructure);
-    await stringifyServerMap(ns,serverMap);
+    await storeServerData(ns,serverMap,globalFiles.serverMap);
 
-    await ns.sleep(1000);
+    /** Now we have all servers and their current information, now let's make the lists
+     * of those that need cracking.
+     */
     
 }
