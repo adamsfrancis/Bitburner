@@ -15,7 +15,7 @@ export const hackingTools: Record<string, { Program: string; Command:keyof NS; p
   };
 
 export const globalFiles:Record<string,string> = {
-  serverMap:'/files/serverMap'
+  serverMap:'/files/serverMap.js'
 }
   
 
