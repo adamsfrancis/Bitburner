@@ -53,15 +53,14 @@ async function getAllServerInfo(ns: NS, serverMap: Map<string, string | undefine
 
 
 
-export async function main(ns:NS) {
+export async function main(ns:NS): Promise<void> {
     /** Get the server structure */
     // eslint-disable-next-line no-constant-condition
-    while(true){
-        const serverStructure:Map<string,string | undefined> = await getServerStructure(ns);
-        const serverMap = await getAllServerInfo(ns,serverStructure);
-        await stringifyServerMap(ns,serverMap);
+    
+    const serverStructure:Map<string,string | undefined> = await getServerStructure(ns);
+    const serverMap = await getAllServerInfo(ns,serverStructure);
+    await stringifyServerMap(ns,serverMap);
 
-        await ns.sleep(1000);
-    }
+    await ns.sleep(1000);
     
 }
