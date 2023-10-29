@@ -1,8 +1,7 @@
 {
   "include": ["NetscriptDefinitions.d.ts", "src/**/*"],
-  "exclude": ["src/lib/react.ts","Mine/**"],
+  "exclude": ["src/lib/react.ts","Mine/**/*"],
   "compilerOptions": {
-    "sourceMap": false,
     "module": "esnext",
     "target": "esnext",
     "moduleResolution": "node",
