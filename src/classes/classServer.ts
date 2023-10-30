@@ -1,19 +1,19 @@
-import { Server } from "@ns";
+import { Server,NS } from "@ns";
 
 export class serverObject{
     backdoorInstalled?: boolean;
     baseDifficulty?: number;
     cpuCores: number;
     ftpPortOpen: boolean;
-    hackDifficulty?: number;
+    hackDifficulty: number;
     hasAdminRights: boolean;
     hostName: string;
     httpPortOpen: boolean;
     isConnectedTo: boolean;
     ramMax: number;
-    minDifficulty?: number;
+    minDifficulty: number;
     moneyAvailable?: number;
-    moneyMax?: number;
+    moneyMax: number;
     numOpenPortsRequired?: number;
     openPortCount?: number;
     purchasedByPlayer: boolean;
@@ -25,15 +25,16 @@ export class serverObject{
     sshPortOpen: boolean;
     parentServer?: string;
     ramAvailable: number;
+    filesAvailable:string[];
     [key: string]: unknown;
 
-    constructor(data:Server, parentServer: string | undefined) {
+    constructor(ns:NS,data:Server, parentServer: string | undefined) {
             
             this.backdoorInstalled = data.backdoorInstalled ?? false;
             this.baseDifficulty = data.baseDifficulty ?? 0;
             this.cpuCores = data.cpuCores;
             this.ftpPortOpen = data.ftpPortOpen;
-            this.hackDifficulty = data.hackDifficulty ?? 0; 
+            this.hackDifficulty = data.hackDifficulty ?? 999999; 
             this.hasAdminRights = data.hasAdminRights;
             this.hostName = data.hostname;
             this.httpPortOpen = data.httpPortOpen;
@@ -41,7 +42,7 @@ export class serverObject{
             this.ramMax = data.maxRam;
             this.minDifficulty = data.minDifficulty ?? 999999;
             this.moneyAvailable = data.moneyAvailable ?? -1;
-            this.moneyMax = data.moneyMax;
+            this.moneyMax = data.moneyMax ?? -1;
             this.numOpenPortsRequired = data.numOpenPortsRequired;
             this.openPortCount = data.openPortCount;
             this.purchasedByPlayer = data.purchasedByPlayer;
@@ -52,6 +53,16 @@ export class serverObject{
             this.sqlPortOpen = data.sqlPortOpen;
             this.sshPortOpen = data.sshPortOpen;
             this.ramAvailable = data.maxRam-data.ramUsed ?? 0;
-            this.parentServer = parentServer;       
+            this.parentServer = parentServer;
+            this.filesAvailable = ns.ls(data.hostname);      
+    }
+    public isPrepped(){
+        return (this.hackDifficulty === this.minDifficulty && this.moneyAvailable === this.moneyMax);
+    }
+    public needsGrow(){
+        return (this.moneyAvailable !== this.moneyMax);
+    }
+    public needsWeaken(){
+        return (this.hackDifficulty !== this.minDifficulty);
     }
 }

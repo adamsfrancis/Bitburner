@@ -1,10 +1,11 @@
 import { serverObject } from "/classes/classServer";
 import { ComparisonOperator } from "/lib/types";
 
-
 /** @RAM 0 GB */
 export function getFilteredServerMap(serverMap: Array<serverObject>, serverProp: string, compOperator: '===', boolValue: boolean): Array<serverObject>;
+/** @RAM 0 GB */
 export function getFilteredServerMap(serverMap: Array<serverObject>, serverProp: string, compOperator: '<' | '<=' | '>' | '>=', numberValue: number): Array<serverObject>;
+
 export function getFilteredServerMap(serverMap: Array<serverObject>, serverProp: string, compOperator: '===', stringValue: string): Array<serverObject>;
 
 export function getFilteredServerMap(serverMap: Array<serverObject>,serverProp: string,compOperator: ComparisonOperator,value: boolean | number | string): Array<serverObject> {
@@ -15,7 +16,7 @@ export function getFilteredServerMap(serverMap: Array<serverObject>,serverProp: 
         return filteredMap;
     }
 }
-
+/** @RAM 0 GB */
 function filterByNumber(serverMap: Array<serverObject>,serverProp: string,compOperator: ComparisonOperator,value: number){
     const filteredMap: Array<serverObject> = serverMap.filter((currentServer) => {
         switch(compOperator){

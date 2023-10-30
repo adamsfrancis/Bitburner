@@ -1,15 +1,21 @@
 import {NS} from "@ns"
 import { toolsData } from "/lib/types";
+import { hackingTools } from "/lib/constants";
 
 export class toolKit{
     Program:string;
     Command:string;
     portFlag:string;
+    purhcaseCost:number;
+    purchasedTool?:boolean;
 
-    constructor(data:toolsData){
+    constructor(data:toolsData,purchasedTool:boolean){
+
         this.Program = data.Program;
         this.Command = data.Command;
         this.portFlag = data.portFlag;
+        this.purhcaseCost = data.purchaseCost;
+        this.purchasedTool = this.purchasedTool ?? false;
     }
 
     /** @remarks RAM: 0.25 GB */
@@ -32,4 +38,5 @@ export class toolKit{
                 break;
         }
     }
+    
 }

@@ -28,10 +28,13 @@ export async function readAndParse<T>(ns:NS,filePath:string):Promise<T> {
     return parsedData;
 }
 
-/** @RAM 0GB */
+/** @RAM 0 GB */
 export async function stringifyAndWrite(ns:NS,objectData:object,filePath:string):Promise<void> {
     const stringifiedObject:string = stringifyObject(objectData);
     
     await writeToFile(ns,filePath,stringifiedObject);
 }
-
+/** @RAM 0 GB */
+export function timeDifference(firstTime:Date,secondTime:Date){
+    return +secondTime - +firstTime;
+  }
