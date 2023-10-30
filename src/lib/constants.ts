@@ -6,7 +6,7 @@ export const allBaseServers = ['home','n00dles','foodnstuff','zer0','CSEC','sigm
 //     Command:string;
 //     portFlag:boolean;
 // }
-export const hackingTools: Record<string, { Program: string; Command:keyof NS; portFlag: string }> = {
+export const hackingTools: Record<string, { Program: string; Command:string; portFlag: string }> = {
   ssh: { Program: 'BruteSSH.exe', Command: 'brutessh', portFlag: 'sshPortOpen' },
   ftp: { Program: 'FTPCrack.exe', Command: 'ftpcrack', portFlag: 'ftpPortOpen' },
   smtp: { Program: 'relaySMTP.exe', Command: 'relaysmtp', portFlag: 'smtpPortOpen' },
@@ -16,7 +16,8 @@ export const hackingTools: Record<string, { Program: string; Command:keyof NS; p
 
 export const globalFiles:Record<string,string> = {
   serverMap:'/files/serverMap.js',
-  availableTools:'/files/availableTools.js'
+  availableTools:'/files/availableTools.js',
+  progressFlags:'/files/progressFlags.js'
 }
   
 
