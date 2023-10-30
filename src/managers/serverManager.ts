@@ -9,7 +9,7 @@ import { allServersRooted, rootWhatWeCan } from "/managers/serverManagement/root
 
 
 /** @RAM 0.2 GB */
-async function getServerStructure(ns:NS):Promise<Map<string, string | undefined>> {
+export async function getServerStructure(ns:NS):Promise<Map<string, string | undefined>> {
     /** Initial run variable setup, we want to start from "home", and follow the network from there.
      *  Since home is the base level, it's parent will be null. Saving parents for possible backdoor
      *  shennanigans later.
@@ -35,7 +35,7 @@ async function getServerStructure(ns:NS):Promise<Map<string, string | undefined>
 }
 
 /** @RAM 2 GB */
-async function getAllServerInfo(ns: NS, serverMap: Map<string, string | undefined>):Promise<Array<serverObject>> {
+export async function getAllServerInfo(ns: NS, serverMap: Map<string, string | undefined>):Promise<Array<serverObject>> {
     const allServers: Array<serverObject> = [];
   
     for (const [currentServer, parentServer] of serverMap) {
@@ -48,7 +48,7 @@ async function getAllServerInfo(ns: NS, serverMap: Map<string, string | undefine
   }
   
   /** @RAM 0 GB */
-  async function storeServerData(ns:NS,serverData:object,filePath:string):Promise<void> {
+  export async function storeServerData(ns:NS,serverData:object,filePath:string):Promise<void> {
     await stringifyAndWrite(ns,serverData,filePath);
   }
 
@@ -65,14 +65,17 @@ async function getAllServerInfo(ns: NS, serverMap: Map<string, string | undefine
 
 export async function main(ns:NS): Promise<void> {
     /** Get the server structure, and update the serverMap */
+    const time1 = new Date();
     await updateServerMap(ns);
-    ns.tprint("Server Map Updated.")
+    const time2 = new Date();
+    const timeDifference = +time2-+time1;
+    ns.tprint("Server Map Updated in "+ timeDifference + " ms")
 
     /** See if all servers are cracked, if not, crack what we can. Later we'll incorporate buying missing tools. */
-    if(!allProgressFlagsTrue(ns)){crackServers(ns);}
+    if(!await allProgressFlagsTrue(ns)){await crackServers(ns);}
     ns.tprint("Progress Flags Updated")
 
     /** Next, let's see what we need to root, and root if possible. */
-    if(!allServersRooted(ns)){await rootWhatWeCan(ns);}
+    if(!await allServersRooted(ns)){await rootWhatWeCan(ns);}
     ns.tprint("Servers rooted.")
 }

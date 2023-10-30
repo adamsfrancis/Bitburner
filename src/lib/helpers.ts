@@ -31,6 +31,7 @@ export async function readAndParse<T>(ns:NS,filePath:string):Promise<T> {
 /** @RAM 0GB */
 export async function stringifyAndWrite(ns:NS,objectData:object,filePath:string):Promise<void> {
     const stringifiedObject:string = stringifyObject(objectData);
+    
     await writeToFile(ns,filePath,stringifiedObject);
 }
 

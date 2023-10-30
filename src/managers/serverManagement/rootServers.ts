@@ -3,7 +3,6 @@ import { serverObject } from "/classes/classServer";
 import { readAndParse } from "/lib/helpers";
 import { globalFiles } from "/lib/constants";
 import { getFilteredServerMap } from "/managers/serverManagement/serverHelpers";
-import { updateServerMap } from "/managers/serverManager";
 
 /** @RAM 0 GB */
 export async function allServersRooted(ns:NS):Promise<boolean>{
@@ -22,5 +21,4 @@ export async function rootWhatWeCan(ns:NS):Promise<void>{
                 await ns.nuke(currentServer.hostName);
             }
     }
-    await updateServerMap(ns);
 }

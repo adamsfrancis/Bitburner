@@ -5,7 +5,6 @@ import { readAndParse,stringifyAndWrite } from "/lib/helpers";
 import { globalFiles } from "/lib/constants";
 import { progressFlags } from "/lib/types";
 import { toolKit } from "/classes/toolKit";
-import { updateServerMap } from "/managers/serverManager";
 import { getFilteredServerMap } from "/managers/serverManagement/serverHelpers";
 
 
@@ -18,19 +17,18 @@ async function getCurrentServerStates(ns:NS):Promise<Array<serverObject>>{
 /** @RAM 0 GB */
 export async function allProgressFlagsTrue(ns:NS):Promise<boolean>{
     const allFlags:progressFlags = await getProgressFlags(ns);
-    ns.tprint("Got flags.")
     const allFlagsValues:Array<boolean> = Object.values(allFlags);
-    ns.tprint("Got values.")
     return allFlagsValues.every((value) => value === true)
-}
+    }
 
 /** @RAM 0 GB */
 async function getProgressFlags(ns:NS):Promise<progressFlags>{
-    try{
+    if(await ns.fileExists(globalFiles.progressFlags)){
         const curProgressFlags:progressFlags = await readAndParse<progressFlags>(ns,globalFiles.progressFlags);
         return curProgressFlags;
-    } catch {
+    } else {
         const curProgressFlags:progressFlags = {allBruteSSH:false,allFTPCrack:false,allHTTPWorm:false,allRelaySMTP:false,allSQLInject:false};
+        await stringifyAndWrite(ns,curProgressFlags,globalFiles.progressFlags);
         return curProgressFlags;
     }
     
@@ -38,7 +36,6 @@ async function getProgressFlags(ns:NS):Promise<progressFlags>{
 
 /** @RAM 2.2 GB */
 async function updateProgressFlags(ns:NS,toolBox:Array<toolKit>){
-    await updateServerMap(ns);
     const curProgressFlags = await getProgressFlags(ns);
     const curServerMap:Array<serverObject> = await getCurrentServerStates(ns);
     for(const tool of toolBox){
@@ -63,7 +60,7 @@ async function applyAvailableTools(ns:NS,toolBox:Array<toolKit>,serverMap:Array<
 
 /** @RAM 0 GB */
 function convertProgramToFlagProp(programName:string):string{
-    return "all"+programName;
+    return "all"+programName.replace(".exe","");
 }
 
 /** @RAM 0 GB */
