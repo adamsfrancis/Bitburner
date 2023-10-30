@@ -2,8 +2,8 @@ import { NS } from "@ns";
 import { globalFiles } from "/lib/constants";
 import { serverObject } from "/classes/classServer";
 import { stringifyAndWrite } from "/lib/helpers";
-import { buildToolKit } from "/managers/serverManagement/buildToolKit";
-import { toolKit } from "/classes/toolKit";
+import { allProgressFlagsTrue, crackServers } from "/managers/serverManagement/crackServers";
+import { allServersRooted, rootWhatWeCan } from "/managers/serverManagement/rootServers";
 
 /** Theoretical RAM Cost: 3.8 GB */
 
@@ -51,17 +51,28 @@ async function getAllServerInfo(ns: NS, serverMap: Map<string, string | undefine
   async function storeServerData(ns:NS,serverData:object,filePath:string):Promise<void> {
     await stringifyAndWrite(ns,serverData,filePath);
   }
+
+  /** @RAM 2.2 GB */
+  export async function updateServerMap(ns:NS):Promise<void>{
+    const serverStructure:Map<string,string | undefined> = await getServerStructure(ns);
+    const serverMap = await getAllServerInfo(ns,serverStructure);
+    await storeServerData(ns,serverMap,globalFiles.serverMap);
+  }
   
 
 
 
 
 export async function main(ns:NS): Promise<void> {
-    /** Get the server structure */
-    const serverStructure:Map<string,string | undefined> = await getServerStructure(ns);
-    const serverMap = await getAllServerInfo(ns,serverStructure);
-    await storeServerData(ns,serverMap,globalFiles.serverMap);
+    /** Get the server structure, and update the serverMap */
+    await updateServerMap(ns);
+    ns.tprint("Server Map Updated.")
 
-    /** Now we have all servers and their current information, now let's make the lists
-     * of those that need cracking. First, let's see if we need to crack anything.*/
+    /** See if all servers are cracked, if not, crack what we can. Later we'll incorporate buying missing tools. */
+    if(!allProgressFlagsTrue(ns)){crackServers(ns);}
+    ns.tprint("Progress Flags Updated")
+
+    /** Next, let's see what we need to root, and root if possible. */
+    if(!allServersRooted(ns)){await rootWhatWeCan(ns);}
+    ns.tprint("Servers rooted.")
 }

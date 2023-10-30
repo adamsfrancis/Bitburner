@@ -10,4 +10,7 @@ export type progressFlags = {
     allRelaySMTP:boolean;
     allHTTPWorm:boolean;
     allSQLInject:boolean;
+    [key:string]:boolean
 }
+
+export type ComparisonOperator = '===' | '<' | '<=' | '>' | '>=';

@@ -1,5 +1,4 @@
 import { NS } from "@ns";
-import { toolsData } from "./types";
 
 /** @RAM 0 GB */
 export function stringifyObject(data:object):string {
@@ -34,3 +33,4 @@ export async function stringifyAndWrite(ns:NS,objectData:object,filePath:string)
     const stringifiedObject:string = stringifyObject(objectData);
     await writeToFile(ns,filePath,stringifiedObject);
 }
+
