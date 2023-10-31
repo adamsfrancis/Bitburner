@@ -1,7 +1,7 @@
 import { NS } from "@ns";
 
 /** @inputs targetServer,targetDate.getTime(),timeToComplete */
-async function main(ns:NS){
+export async function main(ns:NS){
     const targetServer:string = ns.args[0] as string;
     const targetDate:number = ns.args[1] as number;
     const timeToComplete:number = ns.args[2] as number;

@@ -12,7 +12,7 @@ export class serverObject{
     isConnectedTo: boolean;
     ramMax: number;
     minDifficulty: number;
-    moneyAvailable?: number;
+    moneyAvailable: number;
     moneyMax: number;
     numOpenPortsRequired?: number;
     openPortCount?: number;

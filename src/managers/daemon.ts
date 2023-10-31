@@ -40,7 +40,7 @@ async function scoreTargetList(ns:NS):Promise<serverObject>{
     for(let i = 0;i < targetList.length;i++){
         const targetOOM = Math.floor(Math.log10(targetList[i].moneyMax));
         const targetGrowScore = 1 + ((targetList[i].serverGrowth ?? 0)/100);
-        const targetMinSecScore = (targetList[i].minDifficulty ?? 1000)/10;
+        const targetMinSecScore = (targetList[i].minDifficulty ?? 1000)/2;
         targetScores.push((targetOOM-targetMinSecScore)*targetGrowScore);
     }
 
@@ -87,6 +87,7 @@ async function sendWave(ns:NS,usableServerList:serverObject[],attackProgram:stri
     return waveCounter;
 }
 function attackProgramInformation(attackProgram: string, informationRequested: string):number {
+    // eslint-disable-next-line @typescript-eslint/no-inferrable-types
     let result:number = -1;
 
     switch (informationRequested) {
@@ -94,8 +95,10 @@ function attackProgramInformation(attackProgram: string, informationRequested: s
             switch (attackProgram) {
                 case 'grow':
                     result = 0;
+                    break;
                 case 'hack':
                     result = 1;
+                    break;
                 case 'weaken':
                     result = 2;
             }
@@ -105,8 +108,10 @@ function attackProgramInformation(attackProgram: string, informationRequested: s
             switch (attackProgram) {
                 case 'grow':
                     result = serverConstants.ramCostGrow;
+                    break;
                 case 'hack':
                     result = serverConstants.ramCostHack;
+                    break;
                 case 'weaken':
                     result = serverConstants.ramCostWeaken;
             }
@@ -115,16 +120,46 @@ function attackProgramInformation(attackProgram: string, informationRequested: s
     return result;
 }
 
+async function calculateGrowthThreadsNeeded(ns:NS,primaryTarget:serverObject):Promise<number>{
+    const percentageToGrow = Math.ceil(primaryTarget.moneyMax/primaryTarget.moneyAvailable);
+    const threadsNeeded = ns.growthAnalyze(primaryTarget.hostName,percentageToGrow)
+    return threadsNeeded;
+}
 
 async function calculatePrep(ns:NS,primaryTarget:serverObject){
     const usableServers:serverObject[] = await getUsableServers(ns);
     const initialWeaken:number = Math.ceil((primaryTarget.hackDifficulty-primaryTarget.minDifficulty)/serverConstants.serverWeakenAmount);
-    let lastAttackTime = new Date().getTime()+5000;
-    /** Can we do the initial weaken in one shot?, if so, do it, then sleep the duration of weaken. */
-    if(initialWeaken <= calculateAvailableThreads(usableServers,serverConstants.ramCostWeaken)){
-        const timeToWeaken = await ns.getWeakenTime(primaryTarget.hostName);
-        let wavesCompleted = await sendWave(ns,usableServers,'weaken',initialWeaken,primaryTarget.hostName,lastAttackTime,timeToWeaken)
-        if(wavesCompleted > 0){ns.tprint("WE SENT A WAVE!")}
+    const growThreadsNeeded = await calculateGrowthThreadsNeeded(ns,primaryTarget);
+    const secondWeakenNeeded = Math.ceil(growThreadsNeeded/5)*2;
+    const lastAttackTime = new Date().getTime()+10000;
+    const timeToWeaken = await ns.getWeakenTime(primaryTarget.hostName);
+    const timeToGrow = await ns.getGrowTime(primaryTarget.hostName);
+    /** Can we do the initial weaken in one shot?, if not sleep til weaken fires then go back to servermanager */
+    if(initialWeaken >= calculateAvailableThreads(usableServers,serverConstants.ramCostWeaken)){
+        const wavesCompleted = await sendWave(ns,usableServers,'weaken',initialWeaken,primaryTarget.hostName,lastAttackTime,timeToWeaken);
+        if(wavesCompleted > 0){
+            ns.tprint("something went wrong");
+        }
+        await ns.sleep(lastAttackTime + timeToWeaken + 5000);
+        ns.spawn(globalFiles.serverManager,1);
+    }
+    /** If we can, do the max weaken, then whatever we have left for grow/weaken */
+    const canRunFullGrow:boolean = (await calculateAvailableThreads(usableServers,serverConstants.ramCostGrow) < (initialWeaken+growThreadsNeeded+secondWeakenNeeded));
+    if(canRunFullGrow){
+        let wavesCompleted = await sendWave(ns,usableServers,'weaken',initialWeaken,primaryTarget.hostName,lastAttackTime,timeToWeaken);
+        wavesCompleted += await sendWave(ns,usableServers,'grow',growThreadsNeeded,primaryTarget.hostName,lastAttackTime+2000,timeToGrow);
+        wavesCompleted += await sendWave(ns,usableServers,'weaken',secondWeakenNeeded,primaryTarget.hostName,lastAttackTime+4000,timeToWeaken);
+        ns.tprint("Sent " + wavesCompleted + " to " + primaryTarget.hostName)
+        await ns.sleep(lastAttackTime + timeToWeaken + 12000);
+        ns.spawn(globalFiles.serverManager,1);
+    } else {
+        const backupGrowthreads = Math.floor(await calculateAvailableThreads(usableServers,serverConstants.ramCostGrow)/7);
+        let wavesCompleted = await sendWave(ns,usableServers,'weaken',initialWeaken,primaryTarget.hostName,lastAttackTime,timeToWeaken);
+        wavesCompleted += await sendWave(ns,usableServers,'grow',backupGrowthreads*5,primaryTarget.hostName,lastAttackTime+2000,timeToGrow);
+        wavesCompleted += await sendWave(ns,usableServers,'weaken',backupGrowthreads*2,primaryTarget.hostName,lastAttackTime+4000,timeToWeaken);
+        ns.tprint("Sent " + wavesCompleted + " to " + primaryTarget.hostName)
+        await ns.sleep(lastAttackTime + timeToWeaken + 12000);
+        ns.spawn(globalFiles.serverManager,1);
     }
 }
 
